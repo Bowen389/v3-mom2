@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install akshare==1.20.63
-      - name: Scan and replay
+      - name: Scan and replay with Tencent daily prices
         env:
           START_INPUT: ${{ inputs.start }}
           END_INPUT: ${{ inputs.end }}
