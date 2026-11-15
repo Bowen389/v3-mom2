@@ -21,8 +21,18 @@ def fetch(fn, **kwargs):
 
 
 def history(code, start, end, adjust):
-    rows = fetch(ak.stock_zh_a_hist_em, symbol=code, start_date=start,
-                 end_date=end, adjust=adjust)
+    market = "sh" if code.startswith("6") else "sz"
+    if code.startswith(("4", "8", "92")):
+        market = "bj"
+    try:
+        rows = fetch(ak.stock_zh_a_hist_tx, symbol=market + code,
+                     start_date=start, end_date=end, adjust=adjust, timeout=12)
+    except Exception as exc:
+        raise RuntimeError(f"{code}: Tencent history request failed ({adjust or 'raw'})") from exc
+    rows = rows.rename(columns={
+        "date": "日期", "open": "开盘", "close": "收盘",
+        "high": "最高", "low": "最低",
+    })
     if rows.empty:
         raise ValueError(f"{code}: empty price history")
     rows["日期"] = pd.to_datetime(rows["日期"]).dt.date
@@ -111,12 +121,12 @@ def main():
                       for _, row in frame.iterrows()
                       if "ST" not in str(row["名称"]).upper()]
     codes = sorted({code for pool in pools.values() for code, _ in pool})
-    with ThreadPoolExecutor(max_workers=6) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         bars = dict(zip(codes, executor.map(
             lambda code: history(code, start, end, "qfq"), codes)))
     ranked = {day: rank(pool, bars, day) for day, pool in pools.items()}
     picks = sorted({code for frame in ranked.values() for code in frame["code"]})
-    with ThreadPoolExecutor(max_workers=6) as executor:
+    with ThreadPoolExecutor(max_workers=3) as executor:
         raw = dict(zip(picks, executor.map(
             lambda code: history(code, start, end, ""), picks)))
     output = []
