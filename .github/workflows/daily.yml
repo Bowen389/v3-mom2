@@ -1,5 +1,8 @@
 name: V3 mom2 daily scan
 on:
+  push:
+    paths:
+      - '.github/workflows/daily.yml'
   schedule:
     - cron: '13 9 * * 1-5'
   workflow_dispatch:
@@ -32,6 +35,7 @@ jobs:
         run: |
           export TZ=Asia/Shanghai
           today=$(date +%F)
+          if [ "$GITHUB_EVENT_NAME" = push ]; then START_INPUT=2026-11-01; END_INPUT=2026-11-15; fi
           start=${START_INPUT:-$(date -d '10 days ago' +%F)}
           end=${END_INPUT:-$today}
           python scan.py --start "$start" --end "$end"
