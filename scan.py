@@ -21,7 +21,7 @@ def fetch(fn, **kwargs):
 
 
 def history(code, start, end, adjust):
-    rows = fetch(ak.stock_zh_a_hist, symbol=code, start_date=start,
+    rows = fetch(ak.stock_zh_a_hist_em, symbol=code, start_date=start,
                  end_date=end, adjust=adjust)
     if rows.empty:
         raise ValueError(f"{code}: empty price history")
@@ -96,7 +96,7 @@ def main():
         parser.error("--start must be on or before --end")
     end = args.end.strftime("%Y%m%d")
     start = (args.start - timedelta(days=240)).strftime("%Y%m%d")
-    calendar = fetch(ak.tool_trade_date_hist_sina)
+    calendar = fetch(ak.calendar_trade_date_hist_sina)
     sessions = sorted(d for d in pd.to_datetime(calendar["trade_date"]).dt.date
                       if args.start <= d <= args.end)
     if not sessions:
