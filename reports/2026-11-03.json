@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-03",
+  "strategy": "V3_mom2",
+  "signals": [
+    {
+      "rank": 1,
+      "code": "002696",
+      "name": "百洋股份",
+      "ret20": 0.8755690440060697,
+      "ret60": 1.276243093922652,
+      "score": 7.446366729154592,
+      "buy_date": "2026-11-04",
+      "buy_open": 11.5,
+      "shares": 600,
+      "status": "closed",
+      "sell_date": "2026-11-05",
+      "sell_open": 10.55,
+      "net_pnl": -621.03,
+      "net_return": -0.090004
+    },
+    {
+      "rank": 2,
+      "code": "002086",
+      "name": "东方海洋",
+      "ret20": 0.71,
+      "ret60": 0.8288770053475933,
+      "score": 5.110412514315368,
+      "buy_date": "2026-11-04",
+      "buy_open": 3.58,
+      "shares": 2000,
+      "status": "closed",
+      "sell_date": "2026-11-05",
+      "sell_open": 3.28,
+      "net_pnl": -652.75,
+      "net_return": -0.091166
+    },
+    {
+      "rank": 3,
+      "code": "600261",
+      "name": "阳光照明",
+      "ret20": 0.5137614678899083,
+      "ret60": 0.596774193548387,
+      "score": 3.397321800679361,
+      "buy_date": "2026-11-04",
+      "buy_open": 4.95,
+      "shares": 1500,
+      "status": "closed",
+      "sell_date": "2026-11-05",
+      "sell_open": 4.02,
+      "net_pnl": -1448.29,
+      "net_return": -0.195056
+    }
+  ]
+}
