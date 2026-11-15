@@ -97,6 +97,66 @@ def simulate(signal, frame, sessions, idx):
                      "net_return": round(pnl / gross_buy, 6)}
 
 
+STATUS = {
+    "closed": "已平仓", "pending_exit": "待卖出", "pending_entry": "待买入",
+    "no_buy_bar": "无买入行情", "buy_locked": "涨停锁单", "below_one_lot": "预算不足一手",
+}
+
+
+def number(value, spec):
+    return format(value, spec) if value is not None else "—"
+
+
+def table_row(*cells):
+    return "| " + " | ".join(str(cell) for cell in cells) + " |"
+
+
+def write_markdown(directory, reports, summary):
+    daily = [
+        "# V3_mom2 回放汇总", "",
+        f"区间 {summary['start']} 至 {summary['end']}，共 {summary['sessions']} 个交易日。",
+        "本报告使用当前部署版回放口径。原附件核对结果见[逐笔对照](../verification/november-source-trades.md)。",
+        "",
+        "| 信号数 | 已平仓 | 胜率 | 单笔平均净收益 | 合计净盈亏（元） |",
+        "| ---: | ---: | ---: | ---: | ---: |",
+        table_row(summary["signals"], summary["closed"],
+                  number(summary["wins"] / summary["closed"] if summary["closed"] else None, ".2%"),
+                  number(summary["mean_net_return"], "+.2%"),
+                  number(summary["net_pnl"], "+,.2f")),
+        "", "## 每日信号", "",
+        "| 信号日 | Top3 | 已平仓 | 已实现净盈亏（元） |",
+        "| --- | --- | ---: | ---: |",
+    ]
+    for report in reports:
+        day = report["date"]
+        signals = report["signals"]
+        closed = [item for item in signals if item["status"] == "closed"]
+        names = "、".join(item["name"] for item in signals) or "无信号"
+        daily.append(table_row(f"[{day}]({day}.md)", names, len(closed),
+                               number(sum(item["net_pnl"] for item in closed) if closed else None, "+,.2f")))
+        detail = [
+            f"# {day} V3_mom2 盘后信号", "",
+            "[回放汇总](summary.md)", "",
+            "按 20 日与 60 日动量截面 Z 分之和取前三。次日开盘模拟买入，下一交易日开盘模拟卖出。",
+            "",
+            "| 排名 | 股票 | 20 日涨幅 | 60 日涨幅 | 得分 | 买入日 / 开盘价 | 卖出日 / 开盘价 | 股数 | 状态 | 净收益 | 净盈亏（元） |",
+            "| ---: | --- | ---: | ---: | ---: | --- | --- | ---: | --- | ---: | ---: |",
+        ]
+        for item in signals:
+            detail.append(table_row(
+                item["rank"], f"{item['code']} {item['name']}", number(item["ret20"], "+.2%"),
+                number(item["ret60"], "+.2%"), number(item["score"], ".3f"),
+                f"{item['buy_date']} / {number(item.get('buy_open'), '.2f')}" if item.get("buy_date") else "—",
+                f"{item['sell_date']} / {number(item.get('sell_open'), '.2f')}" if item.get("sell_date") else "—",
+                item.get("shares", "—"), STATUS.get(item["status"], item["status"]),
+                number(item.get("net_return"), "+.2%"), number(item.get("net_pnl"), "+,.2f"),
+            ))
+        if not signals:
+            detail = detail[:6] + ["当日无符合条件的信号。"]
+        (directory / f"{day}.md").write_text("\n".join(detail) + "\n", encoding="utf-8")
+    (directory / "summary.md").write_text("\n".join(daily) + "\n", encoding="utf-8")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--start", type=date.fromisoformat, required=True)
@@ -153,6 +213,7 @@ def main():
     }
     body = json.dumps(summary, ensure_ascii=False, indent=2) + "\n"
     (directory / "summary.json").write_text(body)
+    write_markdown(directory, output, summary)
     print(body)
 
 
