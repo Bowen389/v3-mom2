@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install akshare
+      - run: python -m pip install akshare==1.20.63
       - name: Scan and replay
         env:
           START_INPUT: ${{ inputs.start }}
