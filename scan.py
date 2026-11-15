@@ -26,7 +26,7 @@ def history(code, start, end, adjust):
         market = "bj"
     try:
         rows = fetch(ak.stock_zh_a_hist_tx, symbol=market + code,
-                     start_date=start, end_date=end, adjust=adjust, timeout=12)
+                     start_date=start, end_date=end, adjust=adjust)
     except Exception as exc:
         raise RuntimeError(f"{code}: Tencent history request failed ({adjust or 'raw'})") from exc
     rows = rows.rename(columns={
