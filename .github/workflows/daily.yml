@@ -3,8 +3,11 @@ on:
   push:
     paths:
       - '.github/workflows/daily.yml'
+      - 'scan.py'
   schedule:
-    - cron: '13 9 * * 1-5'
+    # GitHub native schedule; UTC -> Asia/Shanghai 17:00 / 18:00
+    - cron: '0 9 * * 1-5'
+    - cron: '0 10 * * 1-5'
   workflow_dispatch:
     inputs:
       start:
@@ -27,24 +30,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install akshare==1.20.63
+      - run: python -m pip install akshare==1.20.65 'exchange-calendars>=4.11,<5'
+      - uses: actions/cache@v4
+        with:
+          path: data/prices
+          key: mom2-prices-${{ github.run_id }}
+          restore-keys: mom2-prices-
+      - run: python -m unittest test_recovery -v
       - name: Scan and replay with Tencent market data
         env:
           START_INPUT: ${{ inputs.start }}
           END_INPUT: ${{ inputs.end }}
         run: |
-          export TZ=Asia/Shanghai
-          today=$(date +%F)
-          if [ "$GITHUB_EVENT_NAME" = push ]; then START_INPUT=2026-11-01; END_INPUT=2026-11-15; fi
-          start=${START_INPUT:-$(date -d '10 days ago' +%F)}
-          end=${END_INPUT:-$today}
-          python scan.py --start "$start" --end "$end"
+          args=()
+          if [ -n "$START_INPUT" ]; then args+=(--start "$START_INPUT"); fi
+          if [ -n "$END_INPUT" ]; then args+=(--end "$END_INPUT"); fi
+          python -u scan.py "${args[@]}"
       - name: Publish reports
+        if: always()
         run: |
           if [ -d reports ]; then
             git add reports/
             if ! git diff --cached --quiet; then
               git -c user.name=github-actions -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit -m "Publish V3 mom2 scan and replay"
-              git push
+              git pull --rebase origin main
+              git push origin HEAD:main
             fi
           fi
