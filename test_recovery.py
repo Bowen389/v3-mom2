@@ -8,6 +8,17 @@ import pandas as pd
 import scan
 
 class Recovery(unittest.TestCase):
+    def test_stale_nonempty_tencent_falls_back_to_eastmoney(self):
+        from datetime import date
+        def frame(day):
+            return pd.DataFrame({'date':[day],'open':[10.],'close':[11.],'high':[11.],'low':[9.]})
+        with tempfile.TemporaryDirectory() as root,chdir(root), \
+             patch.object(scan.ak,'stock_zh_a_hist_tx',return_value=frame('2026-11-17')), \
+             patch.object(scan.ak,'stock_zh_a_hist_em',return_value=frame('2026-11-18')) as backup:
+            bars=scan.history('000889','20260701','20261118','qfq',[date(2026,11,18)])
+            backup.assert_called_once()
+            self.assertIn(date(2026,11,18),bars.index)
+
     def test_single_history_outage_publishes_missing_without_false_empty_signal(self):
         calendar=pd.DataFrame({'trade_date':pd.to_datetime(['2026-11-18','2026-11-19'])})
         pool=pd.DataFrame({'代码':['000889'],'名称':['样本']})
