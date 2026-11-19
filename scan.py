@@ -1,7 +1,8 @@
 import argparse
 import json
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
+from zoneinfo import ZoneInfo
 from math import floor, isfinite
 from pathlib import Path
 from time import sleep
@@ -24,19 +25,31 @@ def history(code, start, end, adjust):
     market = "sh" if code.startswith("6") else "sz"
     if code.startswith(("4", "8", "92")):
         market = "bj"
-    try:
-        rows = fetch(ak.stock_zh_a_hist_tx, symbol=market + code,
-                     start_date=start, end_date=end, adjust=adjust)
-    except Exception as exc:
-        raise RuntimeError(f"{code}: Tencent history request failed ({adjust or 'raw'})") from exc
-    rows = rows.rename(columns={
-        "date": "日期", "open": "开盘", "close": "收盘",
-        "high": "最高", "low": "最低",
-    })
-    if rows.empty:
-        raise ValueError(f"{code}: empty price history")
-    rows["日期"] = pd.to_datetime(rows["日期"]).dt.date
-    return rows.sort_values("日期").set_index("日期")
+    target = Path('data/prices') / f'{code}-{adjust or "raw"}.csv'
+    def validate(rows):
+        rows = rows.rename(columns={'date':'日期','open':'开盘','close':'收盘','high':'最高','low':'最低'})
+        if rows.empty or not {'日期','开盘','收盘','最高','最低'}.issubset(rows.columns):
+            raise ValueError(f'{code}: incomplete history schema')
+        rows['日期'] = pd.to_datetime(rows['日期']).dt.date
+        return rows.drop_duplicates('日期').sort_values('日期').set_index('日期')
+    if target.exists():
+        try:
+            cached = validate(pd.read_csv(target))
+            if cached.index[-1] >= date.fromisoformat(f'{end[:4]}-{end[4:6]}-{end[6:]}'):
+                return cached
+        except Exception:
+            pass
+    errors = []
+    for fn, kwargs in [(ak.stock_zh_a_hist_tx, dict(symbol=market+code)),
+                       (ak.stock_zh_a_hist_em, dict(symbol=code))]:
+        try:
+            rows = validate(fetch(fn, start_date=start, end_date=end, adjust=adjust, **kwargs))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            rows.reset_index().to_csv(target,index=False)
+            return rows
+        except Exception as exc:
+            errors.append(str(exc))
+    raise RuntimeError(f'{code}: ' + '; '.join(errors))
 
 
 def rank(pool, bars, day):
@@ -132,6 +145,8 @@ def write_markdown(directory, reports, summary):
         signals = report["signals"]
         closed = [item for item in signals if item["status"] == "closed"]
         names = "、".join(item["name"] for item in signals) or "无信号"
+        if report.get('missing'):
+            names = '数据待补齐，未锁定排名'
         daily.append(table_row(f"[{day}]({day}.md)", names, len(closed),
                                number(sum(item["net_pnl"] for item in closed) if closed else None, "+,.2f")))
         detail = [
@@ -159,9 +174,16 @@ def write_markdown(directory, reports, summary):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--start", type=date.fromisoformat, required=True)
-    parser.add_argument("--end", type=date.fromisoformat, required=True)
+    parser.add_argument("--start", type=date.fromisoformat)
+    parser.add_argument("--end", type=date.fromisoformat)
     args = parser.parse_args()
+    from exchange_calendars import get_calendar
+    now = datetime.now(ZoneInfo('Asia/Shanghai'))
+    cutoff = now.date() - timedelta(days=int(now.hour < 15))
+    args.end = args.end or get_calendar('XSHG').date_to_session(str(cutoff), direction='previous').date()
+    args.start = args.start or args.end - timedelta(days=10)
+    if args.end > cutoff:
+        parser.error('请选择已收盘日期')
     if args.start > args.end:
         parser.error("--start must be on or before --end")
     end = args.end.strftime("%Y%m%d")
@@ -181,21 +203,30 @@ def main():
                       for _, row in frame.iterrows()
                       if "ST" not in str(row["名称"]).upper()]
     codes = sorted({code for pool in pools.values() for code, _ in pool})
+    errors = {}
+    def safe_history(code, adjust):
+        try:
+            return code, history(code, start, end, adjust)
+        except Exception as exc:
+            errors[f'{code}:{adjust or "raw"}'] = str(exc)
+            return code, pd.DataFrame()
     with ThreadPoolExecutor(max_workers=3) as executor:
-        bars = dict(zip(codes, executor.map(
-            lambda code: history(code, start, end, "qfq"), codes)))
-    ranked = {day: rank(pool, bars, day) for day, pool in pools.items()}
+        bars = dict(executor.map(lambda code: safe_history(code, 'qfq'), codes))
+    ranked, missing = {}, {}
+    for day, pool in pools.items():
+        missing[day] = [code for code, _ in pool if bars[code].empty or day not in bars[code].index]
+        ranked[day] = rank(pool, bars, day) if not missing[day] else pd.DataFrame(columns=['code'])
     picks = sorted({code for frame in ranked.values() for code in frame["code"]})
     with ThreadPoolExecutor(max_workers=3) as executor:
-        raw = dict(zip(picks, executor.map(
-            lambda code: history(code, start, end, ""), picks)))
+        raw = dict(executor.map(lambda code: safe_history(code, ''), picks))
     output = []
     for idx, day in enumerate(sessions):
         signals = []
         for pos, signal in enumerate(ranked[day].itertuples(index=False), 1):
             signals.append({"rank": pos, **signal._asdict(),
-                            **simulate(signal, raw[signal.code], sessions, idx)})
-        output.append({"date": str(day), "strategy": "V3_mom2", "signals": signals})
+                            **(simulate(signal, raw[signal.code], sessions, idx) if not raw[signal.code].empty else {'status':'no_buy_bar'})})
+        output.append({"date": str(day), "strategy": "V3_mom2", "signals": signals,
+                       'status': 'incomplete' if missing[day] else 'complete', 'missing': missing[day]})
     directory = Path("reports")
     directory.mkdir(exist_ok=True)
     for report in output:
@@ -214,6 +245,11 @@ def main():
     body = json.dumps(summary, ensure_ascii=False, indent=2) + "\n"
     (directory / "summary.json").write_text(body)
     write_markdown(directory, output, summary)
+    for report in output:
+        if report['missing']:
+            path = directory / f'{report["date"]}.md'
+            path.write_text(f'# {report["date"]} V3_mom2 数据待补齐\n\n未锁定Top3；缺失：' + ', '.join(report['missing']) + '\n', encoding='utf-8')
+    (directory / 'data_quality.json').write_text(json.dumps({'errors':errors, 'missing':{str(k):v for k,v in missing.items()}, 'end':str(args.end)}, ensure_ascii=False,indent=2))
     print(body)
 
 
