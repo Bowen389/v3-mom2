@@ -21,7 +21,7 @@ def fetch(fn, **kwargs):
             sleep(2 ** attempt)
 
 
-def history(code, start, end, adjust):
+def history(code, start, end, adjust, required=()):
     market = "sh" if code.startswith("6") else "sz"
     if code.startswith(("4", "8", "92")):
         market = "bj"
@@ -31,7 +31,10 @@ def history(code, start, end, adjust):
         if rows.empty or not {'日期','开盘','收盘','最高','最低'}.issubset(rows.columns):
             raise ValueError(f'{code}: incomplete history schema')
         rows['日期'] = pd.to_datetime(rows['日期']).dt.date
-        return rows.drop_duplicates('日期').sort_values('日期').set_index('日期')
+        rows = rows.drop_duplicates('日期').sort_values('日期').set_index('日期')
+        if not set(required).issubset(rows.index):
+            raise ValueError(f'{code}: missing required signal-date bars')
+        return rows
     if target.exists():
         try:
             cached = validate(pd.read_csv(target))
@@ -206,7 +209,8 @@ def main():
     errors = {}
     def safe_history(code, adjust):
         try:
-            return code, history(code, start, end, adjust)
+            required = [day for day,pool in pools.items() if any(c == code for c,_ in pool)] if adjust else []
+            return code, history(code, start, end, adjust, required)
         except Exception as exc:
             errors[f'{code}:{adjust or "raw"}'] = str(exc)
             return code, pd.DataFrame()
