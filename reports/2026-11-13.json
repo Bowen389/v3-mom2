@@ -12,7 +12,11 @@
       "buy_date": "2026-11-16",
       "buy_open": 3.65,
       "shares": 2000,
-      "status": "pending_exit"
+      "status": "closed",
+      "sell_date": "2026-11-17",
+      "sell_open": 3.37,
+      "net_pnl": -613.77,
+      "net_return": -0.084078
     },
     {
       "rank": 2,
@@ -24,7 +28,11 @@
       "buy_date": "2026-11-16",
       "buy_open": 64.17,
       "shares": 100,
-      "status": "pending_exit"
+      "status": "closed",
+      "sell_date": "2026-11-17",
+      "sell_open": 58.97,
+      "net_pnl": -568.11,
+      "net_return": -0.088531
     },
     {
       "rank": 3,
@@ -36,7 +44,13 @@
       "buy_date": "2026-11-16",
       "buy_open": 3.32,
       "shares": 2200,
-      "status": "pending_exit"
+      "status": "closed",
+      "sell_date": "2026-11-17",
+      "sell_open": 3.09,
+      "net_pnl": -559.9,
+      "net_return": -0.076656
     }
-  ]
+  ],
+  "status": "complete",
+  "missing": []
 }
