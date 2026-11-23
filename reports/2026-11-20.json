@@ -9,7 +9,10 @@
       "ret20": 0.7942583732057418,
       "ret60": 0.865671641791045,
       "score": 5.265457533293893,
-      "status": "pending_entry"
+      "buy_date": "2026-11-23",
+      "buy_open": 4.12,
+      "shares": 1800,
+      "status": "pending_exit"
     },
     {
       "rank": 2,
@@ -18,7 +21,10 @@
       "ret20": 0.28961175236096537,
       "ret60": 1.5132924335378322,
       "score": 4.496920067596835,
-      "status": "pending_entry"
+      "buy_date": "2026-11-23",
+      "buy_open": 12.52,
+      "shares": 500,
+      "status": "pending_exit"
     },
     {
       "rank": 3,
@@ -27,7 +33,10 @@
       "ret20": 0.1531339031339034,
       "ret60": 0.6554192229038858,
       "score": 1.6939928273617926,
-      "status": "pending_entry"
+      "buy_date": "2026-11-23",
+      "buy_open": 16.27,
+      "shares": 400,
+      "status": "pending_exit"
     }
   ],
   "status": "complete",
