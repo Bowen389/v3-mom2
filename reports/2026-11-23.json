@@ -1,44 +1,9 @@
 {
   "date": "2026-11-23",
   "strategy": "V3_mom2",
-  "signals": [
-    {
-      "rank": 1,
-      "code": "002242",
-      "name": "九阳股份",
-      "ret20": 0.48048327137546476,
-      "ret60": 2.6040723981900453,
-      "score": 7.450884516217561,
-      "buy_date": "2026-11-24",
-      "buy_open": 34.3,
-      "shares": 200,
-      "status": "pending_exit"
-    },
-    {
-      "rank": 2,
-      "code": "000530",
-      "name": "冰山冷热",
-      "ret20": 0.5757575757575757,
-      "ret60": 1.7591836734693875,
-      "score": 5.90693482352762,
-      "buy_date": "2026-11-24",
-      "buy_open": 13.56,
-      "shares": 500,
-      "status": "pending_exit"
-    },
-    {
-      "rank": 3,
-      "code": "000530",
-      "name": "冰山冷热",
-      "ret20": 0.5757575757575757,
-      "ret60": 1.7591836734693875,
-      "score": 5.90693482352762,
-      "buy_date": "2026-11-24",
-      "buy_open": 13.56,
-      "shares": 500,
-      "status": "pending_exit"
-    }
-  ],
-  "status": "complete",
-  "missing": []
+  "signals": [],
+  "status": "incomplete",
+  "missing": [
+    "003103"
+  ]
 }
