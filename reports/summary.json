@@ -1,10 +1,10 @@
 {
-  "start": "2026-11-14",
-  "end": "2026-11-24",
-  "sessions": 7,
-  "signals": 18,
-  "closed": 15,
-  "wins": 7,
-  "net_pnl": -4167.1,
-  "mean_net_return": -0.039225
+  "start": "2026-11-15",
+  "end": "2026-11-25",
+  "sessions": 8,
+  "signals": 6,
+  "closed": 6,
+  "wins": 1,
+  "net_pnl": -4018.33,
+  "mean_net_return": -0.098019
 }
