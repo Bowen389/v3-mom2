@@ -1,11 +1,44 @@
 {
   "date": "2026-11-24",
   "strategy": "V3_mom2",
-  "signals": [],
-  "status": "incomplete",
-  "missing": [
-    "002579",
-    "603960",
-    "603360"
-  ]
+  "signals": [
+    {
+      "rank": 1,
+      "code": "002242",
+      "name": "九阳股份",
+      "ret20": 0.6424554826616682,
+      "ret60": 3.2691839220462846,
+      "score": 7.1790921442240805,
+      "buy_date": "2026-11-25",
+      "buy_open": 37.43,
+      "shares": 200,
+      "status": "pending_exit"
+    },
+    {
+      "rank": 2,
+      "code": "002086",
+      "name": "东方海洋",
+      "ret20": 0.899581589958159,
+      "ret60": 1.2587064676616917,
+      "score": 4.546620469208375,
+      "buy_date": "2026-11-25",
+      "buy_open": 4.54,
+      "shares": 1600,
+      "status": "pending_exit"
+    },
+    {
+      "rank": 3,
+      "code": "002685",
+      "name": "华东重机",
+      "ret20": 0.896186440677966,
+      "ret60": 0.6635687732342006,
+      "score": 3.4732161937351593,
+      "buy_date": "2026-11-25",
+      "buy_open": 8.9,
+      "shares": 800,
+      "status": "pending_exit"
+    }
+  ],
+  "status": "complete",
+  "missing": []
 }
