@@ -1,56 +1,10 @@
 {
   "date": "2026-11-20",
   "strategy": "V3_mom2",
-  "signals": [
-    {
-      "rank": 1,
-      "code": "002086",
-      "name": "东方海洋",
-      "ret20": 0.7942583732057418,
-      "ret60": 0.865671641791045,
-      "score": 5.265457533293893,
-      "buy_date": "2026-11-23",
-      "buy_open": 4.12,
-      "shares": 1800,
-      "status": "closed",
-      "sell_date": "2026-11-24",
-      "sell_open": 4.41,
-      "net_pnl": 465.48,
-      "net_return": 0.062767
-    },
-    {
-      "rank": 2,
-      "code": "000530",
-      "name": "冰山冷热",
-      "ret20": 0.28961175236096537,
-      "ret60": 1.5132924335378322,
-      "score": 4.496920067596835,
-      "buy_date": "2026-11-23",
-      "buy_open": 12.52,
-      "shares": 500,
-      "status": "closed",
-      "sell_date": "2026-11-24",
-      "sell_open": 13.56,
-      "net_pnl": 471.37,
-      "net_return": 0.075298
-    },
-    {
-      "rank": 3,
-      "code": "605577",
-      "name": "龙版传媒",
-      "ret20": 0.1531339031339034,
-      "ret60": 0.6554192229038858,
-      "score": 1.6939928273617926,
-      "buy_date": "2026-11-23",
-      "buy_open": 16.27,
-      "shares": 400,
-      "status": "closed",
-      "sell_date": "2026-11-24",
-      "sell_open": 17.71,
-      "net_pnl": 525.57,
-      "net_return": 0.080758
-    }
-  ],
-  "status": "complete",
-  "missing": []
+  "signals": [],
+  "status": "incomplete",
+  "missing": [
+    "002199",
+    "603960"
+  ]
 }

@@ -1,56 +1,9 @@
 {
   "date": "2026-11-19",
   "strategy": "V3_mom2",
-  "signals": [
-    {
-      "rank": 1,
-      "code": "002242",
-      "name": "九阳股份",
-      "ret20": 0.43758636573007825,
-      "ret60": 2.5028058361391694,
-      "score": 5.843965728100793,
-      "buy_date": "2026-11-20",
-      "buy_open": 28.65,
-      "shares": 200,
-      "status": "closed",
-      "sell_date": "2026-11-23",
-      "sell_open": 29.31,
-      "net_pnl": 87.37,
-      "net_return": 0.015248
-    },
-    {
-      "rank": 2,
-      "code": "000678",
-      "name": "襄阳轴承",
-      "ret20": 0.3915211970074812,
-      "ret60": 0.7695560253699785,
-      "score": 2.7187016356574336,
-      "buy_date": "2026-11-20",
-      "buy_open": 16.88,
-      "shares": 400,
-      "status": "closed",
-      "sell_date": "2026-11-23",
-      "sell_open": 17.03,
-      "net_pnl": 8.84,
-      "net_return": 0.00131
-    },
-    {
-      "rank": 3,
-      "code": "600156",
-      "name": "华升股份",
-      "ret20": 0.35670731707317094,
-      "ret60": 0.12944162436548234,
-      "score": 1.4548922971713736,
-      "buy_date": "2026-11-20",
-      "buy_open": 8.17,
-      "shares": 900,
-      "status": "closed",
-      "sell_date": "2026-11-23",
-      "sell_open": 7.23,
-      "net_pnl": -899.62,
-      "net_return": -0.122347
-    }
-  ],
-  "status": "complete",
-  "missing": []
+  "signals": [],
+  "status": "incomplete",
+  "missing": [
+    "603030"
+  ]
 }
