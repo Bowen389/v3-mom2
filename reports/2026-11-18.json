@@ -1,13 +1,56 @@
 {
   "date": "2026-11-18",
   "strategy": "V3_mom2",
-  "signals": [],
-  "status": "incomplete",
-  "missing": [
-    "603030",
-    "000889",
-    "300324",
-    "002197",
-    "002843"
-  ]
+  "signals": [
+    {
+      "rank": 1,
+      "code": "002148",
+      "name": "北纬科技",
+      "ret20": 0.4226475279106858,
+      "ret60": 0.35768645357686446,
+      "score": 4.820626767257241,
+      "buy_date": "2026-11-19",
+      "buy_open": 8.62,
+      "shares": 800,
+      "status": "closed",
+      "sell_date": "2026-11-20",
+      "sell_open": 8.86,
+      "net_pnl": 139.62,
+      "net_return": 0.020247
+    },
+    {
+      "rank": 2,
+      "code": "600410",
+      "name": "华胜天成",
+      "ret20": 0.26276276276276267,
+      "ret60": 0.11612475116124754,
+      "score": 2.6118643708548905,
+      "buy_date": "2026-11-19",
+      "buy_open": 17.58,
+      "shares": 400,
+      "status": "closed",
+      "sell_date": "2026-11-20",
+      "sell_open": 15.86,
+      "net_pnl": -739.71,
+      "net_return": -0.105192
+    },
+    {
+      "rank": 3,
+      "code": "300324",
+      "name": "旋极信息",
+      "ret20": 0.19676549865229132,
+      "ret60": 0.19034852546916903,
+      "score": 2.572160265994607,
+      "buy_date": "2026-11-19",
+      "buy_open": 4.31,
+      "shares": 1700,
+      "status": "closed",
+      "sell_date": "2026-11-20",
+      "sell_open": 4.22,
+      "net_pnl": -207.69,
+      "net_return": -0.028346
+    }
+  ],
+  "status": "complete",
+  "missing": []
 }

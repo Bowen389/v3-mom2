@@ -2,9 +2,9 @@
   "start": "2026-11-16",
   "end": "2026-11-26",
   "sessions": 9,
-  "signals": 3,
-  "closed": 3,
-  "wins": 1,
-  "net_pnl": -1652.17,
-  "mean_net_return": -0.078306
+  "signals": 27,
+  "closed": 21,
+  "wins": 11,
+  "net_pnl": -3990.32,
+  "mean_net_return": -0.026718
 }

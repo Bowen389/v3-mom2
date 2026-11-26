@@ -1,11 +1,56 @@
 {
   "date": "2026-11-17",
   "strategy": "V3_mom2",
-  "signals": [],
-  "status": "incomplete",
-  "missing": [
-    "002843",
-    "002226",
-    "603030"
-  ]
+  "signals": [
+    {
+      "rank": 1,
+      "code": "002242",
+      "name": "九阳股份",
+      "ret20": 0.5330739299610896,
+      "ret60": 2.3928955866523145,
+      "score": 7.691800634189965,
+      "buy_date": "2026-11-18",
+      "buy_open": 32.5,
+      "shares": 200,
+      "status": "closed",
+      "sell_date": "2026-11-19",
+      "sell_open": 25.53,
+      "net_pnl": -1441.72,
+      "net_return": -0.221803
+    },
+    {
+      "rank": 2,
+      "code": "600261",
+      "name": "阳光照明",
+      "ret20": 0.7484662576687118,
+      "ret60": 0.8037974683544304,
+      "score": 5.529809681090569,
+      "buy_date": "2026-11-18",
+      "buy_open": 5.14,
+      "shares": 1400,
+      "status": "closed",
+      "sell_date": "2026-11-19",
+      "sell_open": 4.62,
+      "net_pnl": -780.76,
+      "net_return": -0.108499
+    },
+    {
+      "rank": 3,
+      "code": "301288",
+      "name": "清研环境",
+      "ret20": 0.3267457180500659,
+      "ret60": 0.16013824884792638,
+      "score": 1.539712693083968,
+      "buy_date": "2026-11-18",
+      "buy_open": 20.92,
+      "shares": 300,
+      "status": "closed",
+      "sell_date": "2026-11-19",
+      "sell_open": 20.6,
+      "net_pnl": -143.68,
+      "net_return": -0.022894
+    }
+  ],
+  "status": "complete",
+  "missing": []
 }
